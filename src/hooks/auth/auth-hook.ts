@@ -1,5 +1,6 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 const api = axios.create({
   baseURL: 'http://localhost:3000', 
@@ -23,7 +24,16 @@ export const useRegister = () => {
     mutationFn: (userData: RegisterInput) => 
       api.post('/auth/register', userData).then(res => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] }); 
+      toast.success("Registration successful");
+    }, onError: (error: AxiosError) => {
+      if(error.response?.status === 400) {
+        return toast.error("Invalid credentials")
+      }
+      if(error.response?.status === 401) {
+        return toast.error("Email already exists")
+      }
+      return toast.error("An error occurred during registration")
     }
   });
 };
@@ -36,6 +46,16 @@ export const useLogin = () => {
       api.post('/auth/login', credentials).then(res => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
+     toast.success("Login successful");
+    }, onError: (error: AxiosError) => {
+      console.log(error.response?.status)
+      if(error.response?.status === 400) {
+        return toast.error("Invalid credentials")
+      }
+      if(error.response?.status === 401) {
+      return toast.error("Please verify your email and password")
+      }
+      return toast.error("An error occurred during login")
     }
   });
 };
@@ -47,7 +67,16 @@ export const useLogout = () => {
     mutationFn: () => api.post('/auth/logout').then(res => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
-    }
+    toast.success("Logout successful"),
+      queryClient.clear(); 
+
+    },
+    onError: (error: AxiosError) => {
+     
+      if(error.response?.status === 401) {
+        return toast.error("You are already logged out")
+      }
+      return toast.error("An error occurred during logout")}
   });
 };
 

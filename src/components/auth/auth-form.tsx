@@ -25,22 +25,13 @@ export default function AuthForm () {
   
     const handleRegister = async (e: React.FormEvent) => {
       e.preventDefault();
-      try {
         await registerUser(registerData);
-        navigate('/dashboard');
-      } catch (error) {
-        console.error('Registration failed:', error);
-      }
     };
   
     const handleLogin = async (e: React.FormEvent) => {
       e.preventDefault();
-      try {
         await loginUser(loginData);
         navigate('/dashboard');
-      } catch (error) {
-        console.error('Login failed:', error);
-      }
     };
   
     return  <CardContent className="pt-4">
