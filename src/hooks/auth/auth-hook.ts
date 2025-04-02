@@ -13,6 +13,7 @@ type LoginInput = {
   password: string;
 };
 
+// Register a new user
 export const useRegister = () => {
   const queryClient = useQueryClient();
   
@@ -34,6 +35,7 @@ export const useRegister = () => {
   });
 };
 
+// Log in an existing user
 export const useLogin = () => {
   const queryClient = useQueryClient();
   
@@ -56,6 +58,7 @@ export const useLogin = () => {
   });
 };
 
+// Log out the current user
 export const useLogout = () => {
   const queryClient = useQueryClient();
   
@@ -65,14 +68,11 @@ export const useLogout = () => {
       queryClient.invalidateQueries({ queryKey: ['user'] });
     toast.success("Logout successful"),
       queryClient.clear(); 
-
     },
     onError: (error: AxiosError) => {
-     
       if(error.response?.status === 401) {
         return toast.error("You are already logged out")
       }
       return toast.error("An error occurred during logout")}
   });
 };
-

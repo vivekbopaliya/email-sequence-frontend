@@ -28,6 +28,7 @@ import {
 } from '../../../components/ui/dialog';
 import { Node, Edge } from 'reactflow';
 
+// Props for the TopBar component
 type TopBarProps = {
   id?: string;
   flowchartName: string;
@@ -38,6 +39,7 @@ type TopBarProps = {
 };
 
 export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, edges }: TopBarProps) {
+  // Workflow action hooks
   const { mutateAsync: saveWorkflow, isPending: isWorkflowSaving } = useSaveFlow();
   const { mutateAsync: saveAndStartFlow, isPending: isSavingAndStartingWorkflow } = useSaveAndStartFlow();
   const { mutateAsync: updateWorkflow, isPending: isUpdatingWorkflow } = useUpdateFlow();
@@ -46,15 +48,18 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
   const { mutateAsync: stopScheduler, isPending: isStopingScheduler } = useStopScheduler();
   const { data: existingFlow, isLoading } = useGetFlow(id || '');
 
+  // State for validation modal
   const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
   const [validationMessage, setValidationMessage] = useState('');
 
+  // Sync flowchart name with fetched data
   useEffect(() => {
     if (existingFlow && !isLoading) {
       setFlowchartName(existingFlow.name);
     }
   }, [existingFlow, isLoading, setFlowchartName]);
 
+  // Check if workflow nodes are valid
   const validateWorkflow = () => {
     const leadSourceNodes = nodes.filter((node) => node.type === 'leadSource');
     const coldEmailNodes = nodes.filter((node) => node.type === 'coldEmail');
@@ -76,16 +81,19 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
     return true;
   };
 
+  // Stop the scheduler for this workflow
   const handleCancelScheduler = async () => {
     if (!id) return;
     await stopScheduler(id);
   };
 
+  // Start the scheduler for this workflow
   const handleStartScheduler = async () => {
     if (!id) return;
     await startScheduler(id);
   };
 
+  // Save or update the workflow, optionally starting it
   const handleSaveWorkflow = async (start: boolean = false) => {
     if (!validateWorkflow()) {
       setIsValidationModalOpen(true);
@@ -119,6 +127,7 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
     }
   };
 
+  // Dynamic button label based on workflow status
   const getSchedulerButtonLabel = () => {
     if (!existingFlow?.status) return <span className="flex items-center"><Play className="w-4 h-4 mr-1" /> Start</span>;
     switch (existingFlow.status) {
@@ -136,6 +145,7 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
   return (
     <div className="bg-white/95 backdrop-blur-sm shadow-sm p-4 flex justify-between items-center">
       <div className="flex items-center gap-4">
+        {/* Back button */}
         <Button onClick={() => navigate('/dashboard')} className="flex items-center gap-1">
           <ArrowLeft size={16} />
           Back
@@ -143,6 +153,7 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
         <Label htmlFor="flowchart-name" className="text-gray-700 font-medium">
           Workflow Name:
         </Label>
+        {/* Workflow name input */}
         <Input
           id="flowchart-name"
           value={flowchartName}
@@ -155,6 +166,7 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
         {id && (
           <>
             {existingFlow?.status === 'RUNNING' ? (
+              // Stop button for running workflows
               <Button
                 onClick={handleCancelScheduler}
                 isLoading={isStopingScheduler}
@@ -166,6 +178,7 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
                 Stop Scheduler
               </Button>
             ) : (
+              // Start/Restart button for non-running workflows
               <Button
                 onClick={handleStartScheduler}
                 isLoading={isStartingScheduler}
@@ -177,6 +190,7 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
             )}
           </>
         )}
+        {/* Save/Update dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
@@ -203,6 +217,7 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
         </DropdownMenu>
       </div>
 
+      {/* Validation error modal */}
       <Dialog open={isValidationModalOpen} onOpenChange={setIsValidationModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
