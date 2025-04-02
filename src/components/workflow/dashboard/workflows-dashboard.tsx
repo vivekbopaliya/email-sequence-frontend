@@ -93,7 +93,7 @@ const {mutateAsync: logoutUser, isPending: isLoggingOut} = useLogout();
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {flows?.map((flow: any) => (
+            {flows.map((flow: any) => (
               <WorkflowCard
                 key={flow.id}
                 id={flow.id}
