@@ -9,9 +9,8 @@ import { Trash2 } from 'lucide-react';
 export function DelayNode({ data, isConnectable, id, deleteNode }: any) {
   const [days, setDays] = useState(data.delay?.days || 0);
   const [hours, setHours] = useState(data.delay?.hours || 0);
-  const [minutes, setMinutes] = useState(data.delay?.minutes || 1); // Default to 1 minute
+  const [minutes, setMinutes] = useState(data.delay?.minutes || 1); 
 
-  // Update the node's data when any value changes
   useEffect(() => {
     data.delay = {
       days: days,
@@ -20,10 +19,8 @@ export function DelayNode({ data, isConnectable, id, deleteNode }: any) {
     };
   }, [days, hours, minutes, data]);
 
- 
-
   return (
-    <div className="bg-white rounded-lg shadow-lg p-4 border-2 border-orange-200 min-w-[250px]">
+    <div className="bg-white rounded-lg shadow-lg p-4 border-2 border-orange-200 min-w-[300px]">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
 
       <div className="flex items-center justify-between mb-4">

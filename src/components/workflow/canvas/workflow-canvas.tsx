@@ -14,12 +14,10 @@ import 'reactflow/dist/style.css';
 import { useGetFlow } from '../../../hooks/workflow/workflow-hook';
 import { initialNodes, nodeTypes } from '@/lib/utils';
 
-
-
 type WorkflowCanvasProps = {
   id?: string;
-  onNodesChange: (nodes: Node[]) => void; 
-  onEdgesChange: (edges: Edge[]) => void; 
+  onNodesChange: (nodes: Node[]) => void;
+  onEdgesChange: (edges: Edge[]) => void;
 };
 
 export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCanvasProps) {
@@ -73,6 +71,7 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
           label: type,
           ...(type === 'wait' ? { delay: 1 } : {}),
           ...(type === 'coldEmail' ? { subject: '', body: '' } : {}),
+          ...(type === 'leadSource' ? { source: '', contacts: [] } : {}), 
         },
       };
 
@@ -85,14 +84,14 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
     (nodesToDelete: Node[]) => {
       setNodes((nds) => {
         const updatedNodes = nds.filter((node) => !nodesToDelete.find((n) => n.id === node.id));
-        onNodesChange(updatedNodes); // Update parent with new nodes
+        onNodesChange(updatedNodes); 
         return updatedNodes;
       });
       setEdges((eds) => {
         const updatedEdges = eds.filter(
           (edge) => !nodesToDelete.find((n) => n.id === edge.source || n.id === edge.target),
         );
-        onEdgesChange(updatedEdges); // Update parent with new edges
+        onEdgesChange(updatedEdges); 
         return updatedEdges;
       });
     },
@@ -103,7 +102,7 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
     (edgeId: string) => {
       setEdges((eds) => {
         const updatedEdges = eds.filter((edge) => edge.id !== edgeId);
-        onEdgesChange(updatedEdges); // Update parent with new edges
+        onEdgesChange(updatedEdges); 
         return updatedEdges;
       });
     },

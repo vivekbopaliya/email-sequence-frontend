@@ -4,6 +4,7 @@ import { Mail } from 'lucide-react';
 import { Label } from '../../../components/ui/label';
 import { Input } from '../../../components/ui/input';
 import { Card } from '../../../components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 
 export function ColdEmailNode({ data, isConnectable }: any) {
   const [email, setEmail] = useState(data.email || '');
@@ -16,10 +17,8 @@ export function ColdEmailNode({ data, isConnectable }: any) {
     data.body = body;
   }, [email, subject, body, data]);
 
-  
-
   return (
-    <Card className="w-80 bg-white border-2 border-blue-200 p-4">
+    <Card className="min-w-[300px] bg-white border-2 border-blue-200 p-4">
       <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
       
       <div className="flex items-center gap-2 mb-4">
@@ -41,8 +40,9 @@ export function ColdEmailNode({ data, isConnectable }: any) {
         
         <div className="space-y-2">
           <Label htmlFor="body">Body</Label>
-          <Input
+          <Textarea
             id="body"
+            rows={5}
             placeholder="Email content..."
             value={body}
             onChange={(e) => setBody(e.target.value)}
