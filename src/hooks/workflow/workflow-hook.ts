@@ -1,11 +1,8 @@
 import axios from 'axios';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { api } from '@/lib/api';
 
-const api = axios.create({
-  baseURL: 'http://localhost:3000/workflow',
-  withCredentials: true,
-});
 
 type Flow = {
   id?: string;

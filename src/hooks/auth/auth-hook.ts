@@ -1,11 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { api } from '@/lib/api';
 
-const api = axios.create({
-  baseURL: 'http://localhost:3000', 
-  withCredentials: true 
-});
 
 type RegisterInput = {
   email: string;
