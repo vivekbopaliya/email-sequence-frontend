@@ -16,7 +16,7 @@ export const useSaveFlow = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (flowData: Flow) => api.post('/save', flowData).then((res) => res.data),
+    mutationFn: (flowData: Flow) => api.post('/workflow/save', flowData).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['flows'] });
       toast.success('Workflow saved successfully');
@@ -33,7 +33,7 @@ export const useSaveAndStartFlow = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (flowData: Flow) => api.post('/save-and-start', flowData).then((res) => res.data),
+    mutationFn: (flowData: Flow) => api.post('/workflow/save-and-start', flowData).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['flows'] });
       toast.success('Workflow saved and scheduler started successfully');
@@ -49,7 +49,7 @@ export const useSaveAndStartFlow = () => {
 export const useGetFlows = () => {
   return useQuery({
     queryKey: ['flows'],
-    queryFn: () => api.get('/getAll', { withCredentials: true }).then((res) => res.data),
+    queryFn: () => api.get('/workflow/getAll', { withCredentials: true }).then((res) => res.data),
   });
 };
 
@@ -57,7 +57,7 @@ export const useGetFlows = () => {
 export const useGetFlow = (id: string) => {
   return useQuery({
     queryKey: ['flow', id],
-    queryFn: () => api.get(`/get/${id}`, { withCredentials: true }).then((res) => res.data),
+    queryFn: () => api.get(`/workflow/get/${id}`, { withCredentials: true }).then((res) => res.data),
     enabled: !!id,
   });
 };
@@ -68,7 +68,7 @@ export const useUpdateFlow = () => {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Flow }) =>
-      api.patch(`/update/${id}`, data, { withCredentials: true }).then((res) => res.data),
+      api.patch(`/workflow/update/${id}`, data, { withCredentials: true }).then((res) => res.data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['flows'] });
       queryClient.invalidateQueries({ queryKey: ['flow', variables.id] });
@@ -87,7 +87,7 @@ export const useUpdateAndStartFlow = () => {
 
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Flow }) =>
-      api.patch(`/update-and-start/${id}`, data, { withCredentials: true }).then((res) => res.data),
+      api.patch(`/workflow/update-and-start/${id}`, data, { withCredentials: true }).then((res) => res.data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['flows'] });
       queryClient.invalidateQueries({ queryKey: ['flow', variables.id] });
@@ -106,7 +106,7 @@ export const useStartScheduler = () => {
 
   return useMutation({
     mutationFn: (id: string) =>
-      api.post(`/start-scheduler/${id}`, {}, { withCredentials: true }).then((res) => res.data),
+      api.post(`/workflow/start-scheduler/${id}`, {}, { withCredentials: true }).then((res) => res.data),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ['flows'] });
       queryClient.invalidateQueries({ queryKey: ['flow', id] });
@@ -125,7 +125,7 @@ export const useStopScheduler = () => {
 
   return useMutation({
     mutationFn: (id: string) =>
-      api.post(`/stop-scheduler/${id}`, {}, { withCredentials: true }).then((res) => res.data),
+      api.post(`/workflow/stop-scheduler/${id}`, {}, { withCredentials: true }).then((res) => res.data),
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: ['flows'] });
       queryClient.invalidateQueries({ queryKey: ['flow', id] });
@@ -143,7 +143,7 @@ export const useDeleteFlow = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => api.delete(`/delete/${id}`).then((res) => res.data),
+    mutationFn: (id: string) => api.delete(`/workflow/delete/${id}`).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['flows'] });
       toast.success('Workflow deleted successfully');
