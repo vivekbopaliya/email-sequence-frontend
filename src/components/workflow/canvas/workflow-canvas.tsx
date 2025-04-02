@@ -11,34 +11,29 @@ import ReactFlow, {
   Node,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { ColdEmailNode } from '../nodes/cold-email-node';
-import { LeadSourceNode } from '../nodes/lead-source-node';
-import { DelayNode } from '../nodes/delay-node';
 import { useGetFlow } from '../../../hooks/workflow/workflow-hook';
+import { initialNodes, nodeTypes } from '@/lib/utils';
 
-const nodeTypes = {
-  coldEmail: ColdEmailNode,
-  wait: DelayNode,
-  leadSource: LeadSourceNode,
-};
 
-const initialNodes = [
-  {
-    id: 'start',
-    type: 'leadSource',
-    position: { x: 250, y: 0 },
-    data: { label: 'Lead Source' },
-  },
-];
 
 type WorkflowCanvasProps = {
   id?: string;
+  onNodesChange: (nodes: Node[]) => void; 
+  onEdgesChange: (edges: Edge[]) => void; 
 };
 
-export function WorkflowCanvas({ id }: WorkflowCanvasProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCanvasProps) {
+  const [nodes, setNodes, onNodesChangeInternal] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChangeInternal] = useEdgesState([]);
   const { data: existingFlow, isLoading } = useGetFlow(id || '');
+
+  useEffect(() => {
+    onNodesChange(nodes);
+  }, [nodes, onNodesChange]);
+
+  useEffect(() => {
+    onEdgesChange(edges);
+  }, [edges, onEdgesChange]);
 
   useEffect(() => {
     if (existingFlow && !isLoading) {
@@ -88,21 +83,31 @@ export function WorkflowCanvas({ id }: WorkflowCanvasProps) {
 
   const onNodeDelete = useCallback(
     (nodesToDelete: Node[]) => {
-      setNodes((nds) => nds.filter((node) => !nodesToDelete.find((n) => n.id === node.id)));
-      setEdges((eds) =>
-        eds.filter(
+      setNodes((nds) => {
+        const updatedNodes = nds.filter((node) => !nodesToDelete.find((n) => n.id === node.id));
+        onNodesChange(updatedNodes); // Update parent with new nodes
+        return updatedNodes;
+      });
+      setEdges((eds) => {
+        const updatedEdges = eds.filter(
           (edge) => !nodesToDelete.find((n) => n.id === edge.source || n.id === edge.target),
-        ),
-      );
+        );
+        onEdgesChange(updatedEdges); // Update parent with new edges
+        return updatedEdges;
+      });
     },
-    [setNodes, setEdges],
+    [setNodes, setEdges, onNodesChange, onEdgesChange],
   );
 
   const onEdgeDelete = useCallback(
     (edgeId: string) => {
-      setEdges((eds) => eds.filter((edge) => edge.id !== edgeId));
+      setEdges((eds) => {
+        const updatedEdges = eds.filter((edge) => edge.id !== edgeId);
+        onEdgesChange(updatedEdges); // Update parent with new edges
+        return updatedEdges;
+      });
     },
-    [setEdges],
+    [setEdges, onEdgesChange],
   );
 
   return (
@@ -110,8 +115,8 @@ export function WorkflowCanvas({ id }: WorkflowCanvasProps) {
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={onNodesChangeInternal}
+        onEdgesChange={onEdgesChangeInternal}
         onConnect={onConnect}
         onDrop={onDrop}
         onDragOver={onDragOver}

@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { WorkflowDashboard } from './components/workflow/workflows-dashboard';
+import { WorkflowDashboard } from './components/workflow/dashboard/workflows-dashboard';
 import { AuthPage } from './pages/auth-page';
 import { WorkflowCanvasPage } from './pages/workflow-canvas-page';
 

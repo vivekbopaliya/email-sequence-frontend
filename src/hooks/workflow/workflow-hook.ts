@@ -122,6 +122,25 @@ export const useStartScheduler = () => {
   });
 };
 
+// Stop Scheduler
+export const useStopScheduler = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) =>
+      api.post(`/stop-scheduler/${id}`, {}, { withCredentials: true }).then((res) => res.data),
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: ['flows'] });
+      queryClient.invalidateQueries({ queryKey: ['flow', id] });
+      toast.success('Scheduler stopped successfully');
+    },
+    onError: (error) => {
+      toast.error('Error stoping scheduler');
+      console.error(error);
+    },
+  });
+};
+
 // Delete Flow
 export const useDeleteFlow = () => {
   const queryClient = useQueryClient();

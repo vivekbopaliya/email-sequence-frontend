@@ -1,16 +1,17 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Edit, Trash2, LayoutDashboard, Clock, CheckCircle, PlayCircle } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { useLogout } from '../../hooks/auth/auth-hook';
-import { useDeleteFlow, useGetFlows } from '../../hooks/workflow/workflow-hook';
+import { Plus, LayoutDashboard } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { useLogout } from '@/hooks/auth/auth-hook';
+import { useDeleteFlow, useGetFlows } from '@/hooks/workflow/workflow-hook';
+import { WorkflowCard } from './workflow-card';
 
 export function WorkflowDashboard() {
   const navigate = useNavigate();
   const { data: flows, isLoading, error } = useGetFlows();
-  const deleteFlow = useDeleteFlow();
-  const logout = useLogout();
+  const {mutateAsync: deleteWorkflow, isPending: isWorkflowDeleting} = useDeleteFlow();
+const {mutateAsync: logoutUser, isPending: isLoggingOut} = useLogout();
 
   useEffect(() => {
     if (error && (error as any).response?.status === 401) {
@@ -28,7 +29,7 @@ export function WorkflowDashboard() {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteFlow.mutateAsync(id);
+      await deleteWorkflow(id);
     } catch (error) {
       console.error('Error deleting workflow:', error);
     }
@@ -36,7 +37,7 @@ export function WorkflowDashboard() {
 
   const handleLogout = async () => {
     try {
-      await logout.mutateAsync();
+      await logoutUser()
       navigate('/auth');
     } catch (error) {
       console.error('Error logging out:', error);
@@ -53,33 +54,6 @@ export function WorkflowDashboard() {
       </div>
     );
   }
-
-  const getStatusDisplay = (status: string) => {
-    switch (status) {
-      case 'RUNNING':
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 animate-pulse">
-            <PlayCircle className="w-4 h-4 mr-1 animate-spin" />
-            Running
-          </span>
-        );
-      case 'COMPLETED':
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            <CheckCircle className="w-4 h-4 mr-1" />
-            Completed
-          </span>
-        );
-      case 'PENDING':
-      default:
-        return (
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-            <Clock className="w-4 h-4 mr-1" />
-            Pending
-          </span>
-        );
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-10">
@@ -120,42 +94,16 @@ export function WorkflowDashboard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {flows?.map((flow: any) => (
-              <Card
+              <WorkflowCard
                 key={flow.id}
-                className="border-none shadow-md hover:shadow-lg transition-shadow bg-white/95 backdrop-blur-sm overflow-hidden"
-              >
-                <CardHeader className="pb-2 border-b border-gray-100">
-                  <CardTitle className="text-xl font-semibold text-gray-800 flex justify-between items-center">
-                    {flow.name}
-                    <span>{getStatusDisplay(flow.status)}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-4">
-                  <p className="text-sm text-gray-500 mb-4">
-                    Created: {new Date(flow.createdAt).toDateString()}
-                  </p>
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(flow.id)}
-                      className="border-gray-200 text-gray-700 hover:bg-gray-50"
-                    >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(flow.id)}
-                      className="bg-gray-100 hover:bg-gray-200 text-gray-700 hover:text-gray-800 border-none"
-                    >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Delete
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                id={flow.id}
+                name={flow.name}
+                status={flow.status}
+                createdAt={flow.createdAt}
+                onEdit={handleEdit}
+                isWorkflowDeleting={isWorkflowDeleting}
+                onDelete={handleDelete}
+              />
             ))}
           </div>
         )}

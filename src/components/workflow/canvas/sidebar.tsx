@@ -2,9 +2,9 @@ import { Button } from '../../ui/button';
 import { Mail, Clock, Users } from 'lucide-react';
 
 const nodeTypes = [
-  { type: 'coldEmail', label: 'Cold Email', icon: Mail },
-  { type: 'wait', label: 'Wait/Delay', icon: Clock },
   { type: 'leadSource', label: 'Lead Source', icon: Users },
+  { type: 'wait', label: 'Wait/Delay', icon: Clock },
+  { type: 'coldEmail', label: 'Cold Email', icon: Mail },
 ];
 
 export function Sidebar() {
@@ -38,7 +38,7 @@ export function Sidebar() {
       </div>
       <div className="mt-auto pt-6 border-t border-gray-200">
         <p className="text-xs text-gray-500 italic">
-          Drag and drop nodes onto the canvas to build your workflow
+          Drag and drop nodes onto the canvas to build your workflow. Double tap to remove.
         </p>
       </div>
     </aside>

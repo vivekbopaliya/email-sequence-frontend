@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Label } from '../../../components/ui/label';
-import { ArrowLeft, MoreHorizontal, Play, RotateCw, StopCircle, Save } from 'lucide-react';
+import { ArrowLeft, MoreHorizontal, Play, RotateCw, StopCircle, Save, BugPlay, PlaySquare, Loader2 } from 'lucide-react';
 import {
   useGetFlow,
   useSaveFlow,
@@ -10,6 +10,7 @@ import {
   useUpdateFlow,
   useUpdateAndStartFlow,
   useStartScheduler,
+  useStopScheduler,
 } from '../../../hooks/workflow/workflow-hook';
 import {
   DropdownMenu,
@@ -17,21 +18,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../../components/ui/dropdown-menu';
+import { Node, Edge } from 'reactflow';
 
 type TopBarProps = {
   id?: string;
   flowchartName: string;
   setFlowchartName: (name: string) => void;
   navigate: (path: string) => void;
+  nodes: Node[];
+  edges: Edge[];
 };
 
-export function TopBar({ id, flowchartName, setFlowchartName, navigate }: TopBarProps) {
-  const [isSaving, setIsSaving] = useState(false);
-  const saveFlow = useSaveFlow();
-  const saveAndStartFlow = useSaveAndStartFlow();
-  const updateFlow = useUpdateFlow();
-  const updateAndStartFlow = useUpdateAndStartFlow();
-  const startScheduler = useStartScheduler();
+export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, edges }: TopBarProps) {
+  const {mutateAsync: saveWorkflow, isPending: isWorkflowSaving} = useSaveFlow();
+  const {mutateAsync: saveAndStartFlow, isPending: isSavingAndStartingWorkflow} = useSaveAndStartFlow();
+  const {mutateAsync: updateWorkflow, isPending: isUpdatingWorkflow} = useUpdateFlow();
+  const {mutateAsync: updateAndStartWorklow, isPending:isUpdatingAndStartingWorkflow } = useUpdateAndStartFlow();
+  const {mutateAsync: startScheduler, isPending: isStartingScheduler} = useStartScheduler();
+  const {mutateAsync: stopScheduler, isPending: isStopingScheduler} = useStopScheduler();
   const { data: existingFlow, isLoading } = useGetFlow(id || '');
 
   useEffect(() => {
@@ -42,57 +46,37 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate }: TopBar
 
   const handleCancelScheduler = async () => {
     if (!id) return;
-    try {
-      setIsSaving(true);
-      await startScheduler.mutateAsync(id); // Cancel & restart will use the same endpoint for simplicity
-    } catch (error) {
-      console.error('Error canceling scheduler:', error);
-    } finally {
-      setIsSaving(false);
-    }
-  };
+      await stopScheduler(id);
+  }
 
   const handleStartScheduler = async () => {
     if (!id) return;
-    try {
-      setIsSaving(true);
-      await startScheduler.mutateAsync(id);
-    } catch (error) {
-      console.error('Error starting scheduler:', error);
-    } finally {
-      setIsSaving(false);
-    }
+      await startScheduler(id);
   };
 
   const handleSaveWorkflow = async (start: boolean = false) => {
-    try {
-      setIsSaving(true);
       const flowData = {
         name: flowchartName,
-        nodes: existingFlow?.nodes || [],
-        edges: existingFlow?.edges || [],
+        nodes: nodes, 
+        edges: edges, 
       };
 
       if (id) {
         if (start) {
-          await updateAndStartFlow.mutateAsync({ id, data: flowData });
+          await updateAndStartWorklow({ id, data: flowData });
         } else {
-          await updateFlow.mutateAsync({ id, data: flowData });
+          await updateWorkflow({ id, data: flowData });
         }
       } else {
         if (start) {
-          const result = await saveAndStartFlow.mutateAsync(flowData);
+          const result = await saveAndStartFlow(flowData);
           navigate(`/workflows/${result.id}`);
         } else {
-          const result = await saveFlow.mutateAsync(flowData);
+          const result = await saveWorkflow(flowData);
           navigate(`/workflows/${result.id}`);
         }
       }
-    } catch (error) {
-      console.error('Error saving workflow:', error);
-    } finally {
-      setIsSaving(false);
-    }
+   
   };
 
   const getSchedulerButtonLabel = () => {
@@ -133,40 +117,44 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate }: TopBar
       <div className="flex gap-3">
         {id && (
           <>
-            {<Button
-              onClick={handleCancelScheduler}
-              disabled={isSaving || !existingFlow || existingFlow.status !== 'RUNNING'}
-              variant="destructive"
-              className="flex items-center gap-1 text-white"
-            >
-              <StopCircle size={16} />
-              Cancel Scheduler
-            </Button>}
-            <Button
-              onClick={handleStartScheduler}
-              disabled={isSaving}
-              variant="outline"
-              className="flex items-center gap-1 "
-            >
-              {getSchedulerButtonLabel()}
-            </Button>
+            {existingFlow?.status === "RUNNING" ? (
+              <Button
+                onClick={handleCancelScheduler}
+                isLoading={isStopingScheduler}
+                disabled={!existingFlow || existingFlow.status !== 'RUNNING'}
+                variant="destructive"
+                className="flex items-center gap-1 text-white"
+              >
+                <StopCircle size={16} />
+                Stop Scheduler
+              </Button>
+            ) : (
+              <Button
+                onClick={handleStartScheduler}
+                isLoading={isStartingScheduler}
+                variant="outline"
+                className="flex items-center gap-1 "
+              >
+                {getSchedulerButtonLabel()}
+              </Button>
+            )}
           </>
         )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="default" className="flex items-center gap-4 ">
-              <MoreHorizontal size={16} />
-              {id ? "Update" : "Save"}
+            <Button variant="default" className="flex items-center gap-2 " isLoading={isWorkflowSaving || isUpdatingWorkflow || isSavingAndStartingWorkflow || isUpdatingAndStartingWorkflow}>
+            {         <MoreHorizontal size={16} />
+          }                {id ? "Update" : "Save"}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => handleSaveWorkflow(false)} className="flex items-center gap-2">
-              <Save size={16} />
-              {id ? 'Update Workflow' : 'Save Workflow'}
+            <DropdownMenuItem onClick={() => handleSaveWorkflow(false)}  className="flex items-center gap-2">
+{<Save size={16} />
+}              {id ? 'Update Workflow' : 'Save Workflow'}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleSaveWorkflow(true)} className="flex items-center gap-2">
-              <Save size={16} />
-              {id ? 'Update & Start' : 'Save & Start'}
+            {<PlaySquare size={16} />}
+              {id ? 'Update & Start Scheduler' : 'Save & Start Scheduler'}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
