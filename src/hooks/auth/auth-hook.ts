@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { api } from '@/lib/api';
 
@@ -74,5 +74,13 @@ export const useLogout = () => {
         return toast.error("You are already logged out")
       }
       return toast.error("An error occurred during logout")}
+  });
+};
+
+// Get current login user
+export const useGetCurrentUser = () => {
+  return useQuery({
+    queryKey: ['user'],
+    queryFn: () => api.get(`/auth/me`, { withCredentials: true }).then((res) => res.data),
   });
 };

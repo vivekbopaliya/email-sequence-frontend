@@ -1,7 +1,16 @@
 import { Card, CardHeader, CardTitle } from '../components/ui/card';
 import AuthForm from '../components/auth/auth-form';
+import { useGetCurrentUser } from '@/hooks/auth/auth-hook';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function AuthPage() {
+  const navigate = useNavigate();
+
+  const {data: user, isLoading: userLoading} = useGetCurrentUser()
+useEffect(() => {
+  if(user&& !userLoading) {navigate('/dashboard')}
+}, [user])
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
