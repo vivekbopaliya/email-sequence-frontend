@@ -15,7 +15,6 @@ function App() {
           <Route path="/dashboard" element={<WorkflowDashboard />} />
           <Route path="/workflows/new" element={<WorkflowCanvasPage />} />
           <Route path="/workflows/:id" element={<WorkflowCanvasPage />} />
-          <Route path="*" element={<Navigate to="/auth" replace />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>

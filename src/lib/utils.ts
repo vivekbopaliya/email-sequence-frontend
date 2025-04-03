@@ -12,11 +12,14 @@ export function cn(...inputs: ClassValue[]) {
 
 export const initialNodes: Node[] = [
   {
-    id: 'start',
+    id: 'leadSource-1',
     type: 'leadSource',
-    position: { x: 250, y: 0 },
-    data: { label: 'Lead Source' },
+    position: { x: 100, y: 100 },
+    data: {
+     
+    }
   },
+
 ];
 
 export const nodeTypes = {

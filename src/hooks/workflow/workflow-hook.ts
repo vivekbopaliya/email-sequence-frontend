@@ -148,7 +148,7 @@ export const useDeleteFlow = () => {
     },
     onError: (error) => {
       toast.error('Error deleting workflow');
-      console.error(error);
+    console.error(error);
     },
   });
 };

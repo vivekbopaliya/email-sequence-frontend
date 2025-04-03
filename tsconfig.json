@@ -9,7 +9,7 @@
     "skipLibCheck": true,
       "baseUrl": ".",
       "paths": {
-        "@/*": ["./src/*", "env.d.ts"]
+        "@/*": ["./src/*"]
     },
     "outDir": "./dist" 
   },

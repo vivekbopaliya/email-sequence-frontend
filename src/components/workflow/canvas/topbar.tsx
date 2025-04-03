@@ -64,17 +64,17 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
     const leadSourceNodes = nodes.filter((node) => node.type === 'leadSource');
     const coldEmailNodes = nodes.filter((node) => node.type === 'coldEmail');
 
-    const hasEmptyLeadSource = leadSourceNodes.some((node) => !node.data.contacts || node.data.contacts.length === 0);
+    const hasEmptyLeadSource = leadSourceNodes.some((node) => !node.data.leadSourceId);
     if (hasEmptyLeadSource) {
-      setValidationMessage('All Lead Source nodes must have at least one email address.');
+      setValidationMessage('Please select a Lead Source');
       return false;
     }
 
     const hasInvalidEmailNode = coldEmailNodes.some(
-      (node) => !node.data.subject?.trim() || !node.data.body?.trim()
+      (node) => !node.data.emailTemplateId 
     );
     if (hasInvalidEmailNode) {
-      setValidationMessage('All Cold Email nodes must have a subject and body.');
+      setValidationMessage('Please select an Email Template');
       return false;
     }
 
