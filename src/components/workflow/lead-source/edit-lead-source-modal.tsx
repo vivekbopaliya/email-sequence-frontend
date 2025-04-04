@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useUpdateLeadSource } from '@/hooks/lead-source/lead-source-hook';
+import { PlusIcon, Trash2 } from 'lucide-react';
 
 export default function EditLeadSourceModal({ isOpen, setIsOpen, leadSource, setSelectedLeadSourceId }: {
   isOpen: boolean;
@@ -23,21 +24,24 @@ export default function EditLeadSourceModal({ isOpen, setIsOpen, leadSource, set
   }, [leadSource]);
 
   const handleAddContact = () => setContacts([...contacts, { name: '', email: '' }]);
+  
   const handleContactChange = (index: number, field: 'name' | 'email', value: string) => {
     const newContacts = [...contacts];
     newContacts[index][field] = value;
     setContacts(newContacts);
   };
 
-const handleUpdate = async () => {
-  try {
+  const handleRemoveContact = (index: number) => {
+    const newContacts = [...contacts];
+    newContacts.splice(index, 1);
+    setContacts(newContacts.length > 0 ? newContacts : [{ name: '', email: '' }]);
+  };
+
+  const handleUpdate = async () => {
     const updatedLeadSource = await updateLeadSource({ id: leadSource.id, name, contacts });
     setSelectedLeadSourceId(updatedLeadSource.id); 
     setIsOpen(false);
-  } catch (error) {
-    console.error('Error updating lead source:', error);
-  }
-};
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -69,14 +73,23 @@ const handleUpdate = async () => {
                   onChange={(e) => handleContactChange(index, 'email', e.target.value)}
                   placeholder="Contact email"
                 />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleRemoveContact(index)}
+                  disabled={contacts[0].name === '' && contacts[0].email === ''}
+                  className="flex-shrink-0"
+                >
+                  <Trash2 className="h-5 w-5 text-red-500" />
+                </Button>
               </div>
             ))}
             <Button variant="outline" onClick={handleAddContact} className="w-full">
-              Add Contact
+              <PlusIcon className="mr-1" /> Add Contact
             </Button>
           </div>
-          <Button onClick={handleUpdate} disabled={isUpdating} className="w-full">
-            {isUpdating ? 'Updating...' : 'Update Lead Source'}
+          <Button isLoading={isUpdating} onClick={handleUpdate} disabled={isUpdating} className="w-full">
+            Update Lead Source
           </Button>
         </div>
       </DialogContent>

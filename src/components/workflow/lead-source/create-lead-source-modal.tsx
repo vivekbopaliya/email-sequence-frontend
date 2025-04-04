@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCreateLeadSource } from '@/hooks/lead-source/lead-source-hook';
+import { PlusIcon, Trash2 } from 'lucide-react';
 
 export default function CreateLeadSourceModal({ isOpen, setIsOpen, setSelectedLeadSourceId }: {
   isOpen: boolean;
@@ -15,22 +16,25 @@ export default function CreateLeadSourceModal({ isOpen, setIsOpen, setSelectedLe
   const { mutateAsync: createLeadSource, isPending: isCreating } = useCreateLeadSource();
 
   const handleAddContact = () => setContacts([...contacts, { name: '', email: '' }]);
+  
   const handleContactChange = (index: number, field: 'name' | 'email', value: string) => {
     const newContacts = [...contacts];
     newContacts[index][field] = value;
     setContacts(newContacts);
   };
 
+  const handleRemoveContact = (index: number) => {
+    const newContacts = [...contacts];
+    newContacts.splice(index, 1);
+    setContacts(newContacts.length > 0 ? newContacts : [{ name: '', email: '' }]);
+  };
+
   const handleCreate = async () => {
-    try {
-      const leadSource = await createLeadSource({ name, contacts });
-      setSelectedLeadSourceId(leadSource.id); 
-      setName('');
-      setContacts([{ name: '', email: '' }]);
-      setIsOpen(false);
-    } catch (error) {
-      console.error('Error creating lead source:', error);
-    }
+    const leadSource = await createLeadSource({ name, contacts });
+    setSelectedLeadSourceId(leadSource.id); 
+    setName('');
+    setContacts([{ name: '', email: '' }]);
+    setIsOpen(false);
   };
 
   return (
@@ -63,14 +67,23 @@ export default function CreateLeadSourceModal({ isOpen, setIsOpen, setSelectedLe
                   onChange={(e) => handleContactChange(index, 'email', e.target.value)}
                   placeholder="Contact email"
                 />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  disabled={contacts[0].name === '' && contacts[0].email === ''}
+                  onClick={() => handleRemoveContact(index)}
+                  className="flex-shrink-0"
+                >
+                  <Trash2 className="h-5 w-5 text-red-500" />
+                </Button>
               </div>
             ))}
             <Button variant="outline" onClick={handleAddContact} className="w-full">
-              Add Contact
+              <PlusIcon className="mr-1" /> Add Contact
             </Button>
           </div>
-          <Button onClick={handleCreate} disabled={isCreating} className="w-full">
-            {isCreating ? 'Saving...' : 'Save Lead Source'}
+          <Button isLoading={isCreating} onClick={handleCreate} disabled={isCreating} className="w-full">
+            Save Lead Source
           </Button>
         </div>
       </DialogContent>

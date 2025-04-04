@@ -16,14 +16,10 @@ export default function CreateTemplateModal({ isOpen, setIsOpen, setSelectedTemp
     const { mutateAsync: createEmailTemplate, isPending: isCreating } = useCreateEmailTemplate();
   
     const handleCreateTemplate = async () => {
-      try {
         const createdTemplate = await createEmailTemplate(newTemplate);
         setSelectedTemplateId(createdTemplate.id); 
         setNewTemplate({ name: '', subject: '', body: '' });
         setIsOpen(false);
-      } catch (error) {
-        console.error('Error in handleCreateTemplate:', error);
-      }
     };
   
     return (

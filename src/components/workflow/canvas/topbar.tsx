@@ -56,9 +56,20 @@ export function TopBar({ id, flowchartName, setFlowchartName, navigate, nodes, e
   }, [existingFlow, isLoading, setFlowchartName]);
 
   const validateWorkflow = () => {
+    
     const leadSourceNodes = nodes.filter((node) => node.type === 'leadSource');
     const coldEmailNodes = nodes.filter((node) => node.type === 'coldEmail');
 
+    
+    if(!leadSourceNodes || leadSourceNodes.length === 0) {
+      setValidationMessage('At least one Lead Source node is required.');
+      return false
+    }
+    if(!coldEmailNodes || coldEmailNodes.length === 0) {
+      setValidationMessage("At least one Cold Email node is required.");
+      return false
+    }
+ 
     const hasEmptyLeadSource = leadSourceNodes.some((node) => !node.data.leadSourceId);
     if (hasEmptyLeadSource) {
       setValidationMessage('Please select a Lead Source');
