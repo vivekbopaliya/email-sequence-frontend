@@ -65,7 +65,6 @@ export const useLogout = () => {
   return useMutation({
     mutationFn: () => api.post('/auth/logout').then(res => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user'] });
     toast.success("Logout successful"),
       queryClient.clear(); 
     },
