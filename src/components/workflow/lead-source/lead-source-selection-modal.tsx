@@ -45,7 +45,7 @@ export default function LeadSourceSelectionModal({ setIsModalOpen, selectedLeadS
                   variant="outline"
                   className="w-full h-auto py-3 px-4 text-left flex items-center gap-3 hover:bg-green-50"
                   onClick={() => {
-                    setSelectedLeadSourceId(leadSource.id); // Only set the ID
+                    setSelectedLeadSourceId(leadSource.id); 
                     setIsModalOpen(false);
                   }}
                 >
@@ -100,13 +100,13 @@ export default function LeadSourceSelectionModal({ setIsModalOpen, selectedLeadS
       <CreateLeadSourceModal
         isOpen={isCreateModalOpen}
         setIsOpen={setIsCreateModalOpen}
-        setSelectedLeadSourceId={setSelectedLeadSourceId} // Updated prop name
+        setSelectedLeadSourceId={setSelectedLeadSourceId} 
       />
       <EditLeadSourceModal
         isOpen={isEditModalOpen}
         setIsOpen={setIsEditModalOpen}
         leadSource={leadSourceToEdit}
-        setSelectedLeadSourceId={setSelectedLeadSourceId} // Updated prop name
+        setSelectedLeadSourceId={setSelectedLeadSourceId} 
       />
       <DeleteLeadSourceConfirmationModal
         isOpen={isDeleteModalOpen}

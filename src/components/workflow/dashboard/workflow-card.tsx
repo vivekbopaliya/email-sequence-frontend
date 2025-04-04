@@ -12,7 +12,6 @@ import {
   DialogTrigger,
 } from '../../ui/dialog';
 
-// Props for the WorkflowCard component
 type WorkflowCardProps = {
   id: string;
   name: string;
@@ -24,10 +23,8 @@ type WorkflowCardProps = {
 };
 
 export function WorkflowCard({ id, name, status, createdAt, onEdit, onDelete, isWorkflowDeleting }: WorkflowCardProps) {
-  // State for delete confirmation modal
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Display status with icon and style
   const getStatusDisplay = (status: string) => {
     switch (status) {
       case 'RUNNING':
@@ -55,7 +52,6 @@ export function WorkflowCard({ id, name, status, createdAt, onEdit, onDelete, is
     }
   };
 
-  // Custom delete message based on status
   const getDeleteDescription = (status: string) => {
     switch (status) {
       case 'RUNNING':
@@ -68,7 +64,6 @@ export function WorkflowCard({ id, name, status, createdAt, onEdit, onDelete, is
     }
   };
 
-  // Confirm deletion and close modal
   const handleDeleteConfirm = async () => {
     await onDelete(id);
     setIsDeleteModalOpen(false);
@@ -77,7 +72,6 @@ export function WorkflowCard({ id, name, status, createdAt, onEdit, onDelete, is
   return (
     <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-white/95 backdrop-blur-sm overflow-hidden">
       <CardHeader className="pb-2 border-b border-gray-100">
-        {/* Workflow name and status */}
         <CardTitle className="text-xl font-semibold text-gray-800 flex justify-between items-center">
           {name}
           <span>{getStatusDisplay(status)}</span>
@@ -86,7 +80,6 @@ export function WorkflowCard({ id, name, status, createdAt, onEdit, onDelete, is
       <CardContent className="pt-4">
         <p className="text-sm text-gray-500 mb-4">Created: {new Date(createdAt).toDateString()}</p>
         <div className="flex justify-end gap-2">
-          {/* Edit button */}
           <Button
             variant="outline"
             size="sm"
@@ -96,7 +89,6 @@ export function WorkflowCard({ id, name, status, createdAt, onEdit, onDelete, is
             <Edit className="w-4 h-4 mr-2" />
             Edit
           </Button>
-          {/* Delete button with confirmation modal */}
           <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
             <DialogTrigger asChild>
               <Button

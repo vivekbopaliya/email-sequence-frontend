@@ -5,7 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useCreateLeadSource } from '@/hooks/lead-source/lead-source-hook';
 
-export default function CreateLeadSourceModal({ isOpen, setIsOpen, setSelectedLeadSourceId }: any) {
+export default function CreateLeadSourceModal({ isOpen, setIsOpen, setSelectedLeadSourceId }: {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  setSelectedLeadSourceId: (leadSourceId: string) => void;
+}) {
   const [name, setName] = useState('');
   const [contacts, setContacts] = useState<{ name: string; email: string }[]>([{ name: '', email: '' }]);
   const { mutateAsync: createLeadSource, isPending: isCreating } = useCreateLeadSource();
@@ -20,7 +24,7 @@ export default function CreateLeadSourceModal({ isOpen, setIsOpen, setSelectedLe
   const handleCreate = async () => {
     try {
       const leadSource = await createLeadSource({ name, contacts });
-      setSelectedLeadSourceId(leadSource.id); // Only set the ID
+      setSelectedLeadSourceId(leadSource.id); 
       setName('');
       setContacts([{ name: '', email: '' }]);
       setIsOpen(false);

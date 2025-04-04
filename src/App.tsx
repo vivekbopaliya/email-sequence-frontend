@@ -16,10 +16,10 @@ const isAuthenticated = async () => {
       withCredentials: true, 
     });
     console.log('Auth check response:', response.data);
-    return true; // If the request succeeds, user is authenticated
+    return true; 
   } catch (error) {
     console.log('Auth check failed:', error);
-    return false; // If the request fails (e.g., 401), user is not authenticated
+    return false;
   }
 };
 
@@ -29,7 +29,6 @@ const ProtectedRoute = () => {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check authentication status when the component mounts
     const checkAuth = async () => {
       const isAuth = await isAuthenticated();
       console.log(isAuth)
@@ -52,18 +51,15 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          {/* Default route redirects to /auth */}
           <Route path="/" element={<Navigate to="/auth" replace />} />
           <Route path="/auth" element={<AuthPage />} />
 
-          {/* Protected routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<WorkflowDashboard />} />
             <Route path="/workflows/new" element={<WorkflowCanvasPage />} />
             <Route path="/workflows/:id" element={<WorkflowCanvasPage />} />
           </Route>
 
-          {/* Catch-all route to redirect to /auth */}
           <Route path="*" element={<Navigate to="/auth" replace />} />
         </Routes>
       </BrowserRouter>

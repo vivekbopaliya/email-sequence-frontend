@@ -45,7 +45,7 @@ export default function TemplateSelectionModal({ setIsModalOpen, selectedTemplat
                   variant="outline"
                   className="w-full h-auto py-3 px-4 text-left flex items-center gap-3 hover:bg-blue-50"
                   onClick={() => {
-                    setSelectedTemplateId(template.id); // Only set the ID
+                    setSelectedTemplateId(template.id); 
                     setIsModalOpen(false);
                   }}
                 >
@@ -100,13 +100,13 @@ export default function TemplateSelectionModal({ setIsModalOpen, selectedTemplat
       <CreateTemplateModal
         isOpen={isCreateModalOpen}
         setIsOpen={setIsCreateModalOpen}
-        setSelectedTemplateId={setSelectedTemplateId} // Updated prop name
+        setSelectedTemplateId={setSelectedTemplateId} 
       />
       <EditTemplateModal
         isOpen={isEditModalOpen}
         setIsOpen={setIsEditModalOpen}
         template={templateToEdit}
-        setSelectedTemplateId={setSelectedTemplateId} // Updated prop name
+        setSelectedTemplateId={setSelectedTemplateId} 
       />
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}

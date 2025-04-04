@@ -11,9 +11,8 @@ export function ColdEmailNode({ data, isConnectable }: any) {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(data.emailTemplateId || null);
   const { data: templates } = useGetEmailTemplates();
 
-  // Update node data when template is selected
   useEffect(() => {
-    data.emailTemplateId = selectedTemplateId; // Only store the ID in the node data
+    data.emailTemplateId = selectedTemplateId; 
   }, [selectedTemplateId, data]);
 
   // Find the selected template for display purposes
@@ -23,14 +22,16 @@ export function ColdEmailNode({ data, isConnectable }: any) {
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       <Card 
         className="min-w-[350px] bg-white border-2 border-blue-200 p-6 hover:cursor-pointer hover:border-blue-300 transition-colors"
-        onClick={() => setIsModalOpen(true)}
       >
         <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
         <div className="flex items-center gap-3 mb-6">
           <Mail className="w-6 h-6 text-blue-500" />
           <h3 className="font-semibold text-xl">Cold Email</h3>
         </div>
-        <div className="flex justify-center items-center h-[120px]">
+        <div 
+        onClick={() => setIsModalOpen(true)}
+        
+        className="flex justify-center items-center h-[120px]">
           {selectedTemplate ? (
             <div className="text-center">
               <p className="text-lg font-medium text-gray-700">{selectedTemplate.name}</p>

@@ -5,7 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useUpdateLeadSource } from '@/hooks/lead-source/lead-source-hook';
 
-export default function EditLeadSourceModal({ isOpen, setIsOpen, leadSource, setSelectedLeadSourceId }: any) {
+export default function EditLeadSourceModal({ isOpen, setIsOpen, leadSource, setSelectedLeadSourceId }: {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  leadSource: any; 
+  setSelectedLeadSourceId: (leadSourceId: string) => void;
+}) {
   const [name, setName] = useState(leadSource?.name || '');
   const [contacts, setContacts] = useState(leadSource?.contacts || [{ name: '', email: '' }]);
   const { mutateAsync: updateLeadSource, isPending: isUpdating } = useUpdateLeadSource();
@@ -27,7 +32,7 @@ export default function EditLeadSourceModal({ isOpen, setIsOpen, leadSource, set
 const handleUpdate = async () => {
   try {
     const updatedLeadSource = await updateLeadSource({ id: leadSource.id, name, contacts });
-    setSelectedLeadSourceId(updatedLeadSource.id); // Only set the ID
+    setSelectedLeadSourceId(updatedLeadSource.id); 
     setIsOpen(false);
   } catch (error) {
     console.error('Error updating lead source:', error);

@@ -14,7 +14,6 @@ import 'reactflow/dist/style.css';
 import { useGetFlow } from '../../../hooks/workflow/workflow-hook';
 import { initialNodes, nodeTypes } from '@/lib/utils';
 
-// Props for the WorkflowCanvas component
 type WorkflowCanvasProps = {
   id?: string;
   onNodesChange: (nodes: Node[]) => void;
@@ -22,22 +21,18 @@ type WorkflowCanvasProps = {
 };
 
 export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCanvasProps) {
-  // Manage nodes and edges state
   const [nodes, setNodes, onNodesChangeInternal] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChangeInternal] = useEdgesState([]);
   const { data: existingFlow, isLoading } = useGetFlow(id || '');
 
-  // Sync nodes with parent component
   useEffect(() => {
     onNodesChange(nodes);
   }, [nodes, onNodesChange]);
 
-  // Sync edges with parent component
   useEffect(() => {
     onEdgesChange(edges);
   }, [edges, onEdgesChange]);
 
-  // Load existing flow data when available
   useEffect(() => {
     if (existingFlow && !isLoading) {
       setNodes(existingFlow.nodes);
@@ -45,19 +40,16 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
     }
   }, [existingFlow, isLoading, setNodes, setEdges]);
 
-  // Handle connecting nodes
   const onConnect = useCallback(
     (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
   );
 
-  // Allow dragging over the canvas
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  // Handle dropping a new node
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
@@ -71,7 +63,6 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
         y: event.clientY - reactFlowBounds.top,
       };
 
-      // Create a new node with default data
       const newNode = {
         id: `${type}-${Date.now()}`,
         type,
@@ -89,7 +80,6 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
     [setNodes],
   );
 
-  // Delete selected nodes and related edges
   const onNodeDelete = useCallback(
     (nodesToDelete: Node[]) => {
       setNodes((nds) => {
@@ -108,7 +98,6 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
     [setNodes, setEdges, onNodesChange, onEdgesChange],
   );
 
-  // Delete an edge on double-click
   const onEdgeDelete = useCallback(
     (edgeId: string) => {
       setEdges((eds) => {
@@ -122,7 +111,6 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
 
   return (
     <div className="flex-grow h-full mb-10 ml-4 rounded-lg overflow-hidden">
-      {/* ReactFlow canvas */}
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -138,7 +126,6 @@ export function WorkflowCanvas({ id, onNodesChange, onEdgesChange }: WorkflowCan
         fitView
         className="rounded-lg"
       >
-        {/* Canvas controls */}
         <Controls className="m-4 bg-white shadow-md rounded-md border border-gray-100" />
         <MiniMap className="m-4 bg-white rounded-md border border-gray-100 shadow-md" />
         <Background gap={16} size={1} />

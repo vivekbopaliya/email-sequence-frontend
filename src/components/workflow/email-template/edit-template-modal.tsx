@@ -17,7 +17,7 @@ export default function EditTemplateModal({ isOpen, setIsOpen, template, setSele
     const handleUpdateTemplate = async () => {
       try {
         await updateEmailTemplate({ id: template.id, ...editTemplate });
-        setSelectedTemplateId(template.id); // Only set the ID
+        setSelectedTemplateId(template.id); 
         setIsOpen(false);
       } catch (error) {
         console.error('Error in handleUpdateTemplate:', error);

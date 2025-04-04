@@ -9,11 +9,9 @@ import { Button } from '../../components/ui/button';
 
 export default function AuthForm() {
   const navigate = useNavigate();
-  // Hooks for registration and login
   const { mutateAsync: registerUser, isPending: isUserRegistering } = useRegister();
   const { mutateAsync: loginUser, isPending: isUserLoging } = useLogin();
 
-  // State for form data
   const [registerData, setRegisterData] = useState({
     name: '',
     email: '',
@@ -25,13 +23,11 @@ export default function AuthForm() {
     password: '',
   });
 
-  // Handle registration form submission
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     await registerUser(registerData);
   };
 
-  // Handle login form submission and redirect
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     await loginUser(loginData);
@@ -57,7 +53,6 @@ export default function AuthForm() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Login form */}
         <TabsContent value="login">
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
@@ -94,7 +89,6 @@ export default function AuthForm() {
           </form>
         </TabsContent>
 
-        {/* Register form */}
         <TabsContent value="register">
           <form onSubmit={handleRegister} className="space-y-5">
             <div className="space-y-2">

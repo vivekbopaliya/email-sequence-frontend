@@ -18,7 +18,7 @@ export default function CreateTemplateModal({ isOpen, setIsOpen, setSelectedTemp
     const handleCreateTemplate = async () => {
       try {
         const createdTemplate = await createEmailTemplate(newTemplate);
-        setSelectedTemplateId(createdTemplate.id); // Only set the ID
+        setSelectedTemplateId(createdTemplate.id); 
         setNewTemplate({ name: '', subject: '', body: '' });
         setIsOpen(false);
       } catch (error) {

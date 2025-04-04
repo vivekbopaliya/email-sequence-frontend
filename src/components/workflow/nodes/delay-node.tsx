@@ -3,8 +3,6 @@ import { Clock } from 'lucide-react';
 import { Label } from '../../../components/ui/label';
 import { Input } from '../../../components/ui/input';
 import { useEffect, useState } from 'react';
-import { Button } from '../../../components/ui/button';
-import { Trash2 } from 'lucide-react';
 
 export function DelayNode({ data, isConnectable, id, deleteNode }: any) {
   const [days, setDays] = useState(data.delay?.days || 0);

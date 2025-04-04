@@ -1,7 +1,12 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-export default function DeleteLeadSourceConfirmationModal({ isOpen, setIsOpen, onConfirm, isDeleting }: any) {
+export default function DeleteLeadSourceConfirmationModal({ isOpen, setIsOpen, onConfirm, isDeleting }: {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  onConfirm: () => void;
+  isDeleting: boolean;
+}) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]">

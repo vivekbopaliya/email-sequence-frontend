@@ -9,7 +9,6 @@ import { WorkflowCard } from './workflow-card';
 
 export function WorkflowDashboard() {
   const navigate = useNavigate();
-  // Fetch workflows and handle auth/logout
   const { data: flows, isLoading, error } = useGetFlows();
   const { mutateAsync: deleteWorkflow, isPending: isWorkflowDeleting } = useDeleteFlow();
   const { mutateAsync: logoutUser, isPending: isLoggingOut } = useLogout();
@@ -21,22 +20,18 @@ export function WorkflowDashboard() {
     }
   }, [error, navigate]);
 
-  // Navigate to new workflow page
   const handleCreateNew = () => {
     navigate('/workflows/new');
   };
 
-  // Navigate to edit workflow page
   const handleEdit = (id: string) => {
     navigate(`/workflows/${id}`);
   };
 
-  // Delete a workflow
   const handleDelete = async (id: string) => {
     await deleteWorkflow(id);
   };
 
-  // Logout and redirect to auth page
   const handleLogout = async () => {
     try {
       await logoutUser();
@@ -46,7 +41,6 @@ export function WorkflowDashboard() {
     }
   };
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -61,7 +55,6 @@ export function WorkflowDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-10">
       <div className="container mx-auto px-4 sm:px-6">
-        {/* Header with title and buttons */}
         <div className="mb-8 bg-white/80 backdrop-blur-sm rounded-lg shadow-md p-6">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
@@ -86,7 +79,6 @@ export function WorkflowDashboard() {
           </div>
         </div>
 
-        {/* Empty state or workflow list */}
         {flows?.length === 0 ? (
           <Card className="text-center p-8 bg-white/95 backdrop-blur-sm border-none shadow-lg">
             <CardContent className="pt-6">

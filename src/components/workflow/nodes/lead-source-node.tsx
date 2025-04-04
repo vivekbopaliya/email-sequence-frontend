@@ -1,4 +1,3 @@
-// File: components/workflow/nodes/lead-source-node.tsx
 import { useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Users, Plus } from 'lucide-react';
@@ -12,14 +11,12 @@ export function LeadSourceNode({ data, isConnectable }: any) {
   const [selectedLeadSourceId, setSelectedLeadSourceId] = useState<string | null>(data.leadSourceId || null);
   const { data: leadSources } = useGetLeadSources();
 
-  // Update node data when lead source is selected
   useEffect(() => {
     data.leadSourceId = selectedLeadSourceId;
-    // Only store the ID in the node data
   }, [selectedLeadSourceId, data]);
   
-  const selectedLeadSource = leadSources?.find((ls: any) => ls.id === selectedLeadSourceId);
   // Find the selected lead source for display purposes
+  const selectedLeadSource = leadSources?.find((ls: any) => ls.id === selectedLeadSourceId);
  
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
