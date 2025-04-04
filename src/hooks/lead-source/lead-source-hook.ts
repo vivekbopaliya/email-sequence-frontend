@@ -2,6 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { api } from '@/lib/api';
+import { AxiosError } from 'axios';
 
 type Contact = {
   name: string;
@@ -36,7 +37,10 @@ export const useCreateLeadSource = () => {
       queryClient.invalidateQueries({ queryKey: ['leadSources'] });
       toast.success('Lead source created successfully');
     },
-    onError: (error) => {
+    onError: (error: AxiosError) => {
+      if(error.response?.status=== 400 ){
+        return toast.error("Atleast one contact and name of lead source are required.")
+    }
       toast.error('Error creating lead source');
       console.error(error);
     },
@@ -52,9 +56,13 @@ export const useUpdateLeadSource = () => {
       api.put(`/lead-source/update/${id}`, leadSourceData).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['leadSources'] });
+      
       toast.success('Lead source updated successfully');
     },
-    onError: (error) => {
+    onError: (error: AxiosError) => {
+      if(error.response?.status=== 400 ){
+        return toast.error("Atleast one contact and name of lead source are required.")
+    }
       toast.error('Error updating lead source');
       console.error(error);
     },
@@ -71,7 +79,10 @@ export const useDeleteLeadSource = () => {
       queryClient.invalidateQueries({ queryKey: ['leadSources'] });
       toast.success('Lead source deleted successfully');
     },
-    onError: (error) => {
+    onError: (error: AxiosError) => {
+      if(error.response?.status=== 404 ){
+        return toast.error("The lead source doesn't exist (anymore).")
+    }
       toast.error('Error deleting lead source');
       console.error(error);
     },
